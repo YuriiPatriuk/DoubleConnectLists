@@ -5,43 +5,49 @@ using namespace std;
 template <typename T>
 class DList
 {
-	struct Node
-	{
-		T data;
-		Node* next, *prev;
-		Node(const T& data = T(), Node* prev = nullptr, Node* next=nullptr)
-			:data(data), next(next), prev(prev)
-		{}
-	};
 public:
 	DList() = default;
-	//~Dlist();
-		
-	void pushFront(const T& data);
-	void pushBack(const T& data);
-	void pushFrontByData(const T& foundData, const T& data);
-	void popByData(const T& data);
+	void pushFront(const T & data);
+	void pushBack(const T & data);
+	void pushFrontByData(const T & foundData, const T & data);
+	void pushBackByData(const T & foundData, const T & data);
+	void popByData(const T & data);
 	void popFront();
 	void popBack();
 	bool isEmpty() const;
 	size_t getSize() const;
+	size_t searchAndChangeData(const T & searchData, const T & changeData);
+	void reverse();
 	void clear();
 	void print() const;
+	DList& operator + (const DList& data1);
+	DList& operator * (const DList& data1);
 	void printR() const;
 
 private:
-	Node* head = nullptr, *tail = nullptr;
+	struct Node
+	{
+		T data;
+		Node* next = nullptr, *prev = nullptr;
+		Node(const T& data = T(), Node* prev = nullptr, Node* next=nullptr)
+			:data(data), next(next), prev(prev)
+		{}
+	};
+	Node* head = nullptr, * tail = nullptr;
 	size_t size = 0;
 	auto findNode(const T& data);
+	bool helpCheck(const vector<T>& s, const T& data)
+	{
+		for (size_t i = 0; i < s.size(); i++)
+		{
+			if (s[i] == data)
+				return false;
+		}
+		return true;
+	}
+
+
 };
-
-//template<typename T>
-//inline DList<T>::~Dlist()
-//{
-//	cout << "----Destructor-----" << endl;
-//	clear();
-//}
-
 template<typename T>
 inline void DList<T>::pushFront(const T& data)
 {
@@ -72,22 +78,54 @@ inline void DList<T>::pushBack(const T& data)
 }
 
 template<typename T>
-inline void DList<T>::pushFrontByData(const T& foundData, const T& data)//need to complete
+inline void DList<T>::pushFrontByData(const T& foundData, const T& data)
 {
 	Node* find = findNode(foundData);
-	if (find != nullptr) {
+	if (find == nullptr)
+	{
+		cout << "No such element!" << endl;
+		return;
+	}
+	else {
 		Node* temp = new Node(data, nullptr, find);
-		if (isEmpty()) {
+		if (find == head)
+		{
 			head = temp;
-			tail = temp; //first
+			temp->next->prev = temp;
 		}
 		else
 		{
-			find->prev = temp;
-			temp->next = find;
 			temp->prev = find->prev;
 			find->prev->next = temp;
+			find->prev = temp;
+			//temp->next = find;
 
+		}
+		++size;
+	}
+}
+
+template<typename T>
+inline void DList<T>::pushBackByData(const T& foundData, const T& data)
+{
+	Node* find = findNode(foundData);
+	if (find == nullptr)
+	{
+		cout << "No such element!" << endl;
+		return;
+	}
+	else {
+		Node* temp = new Node(data, find, nullptr);
+		if (find == tail)
+		{
+			find->next = temp;
+			tail = temp;
+		}
+		else
+		{
+			temp->next = find->next;
+			find->next->prev = temp;
+			find->next = temp;
 		}
 
 		++size;
@@ -180,10 +218,46 @@ inline size_t DList<T>::getSize() const
 }
 
 template<typename T>
+inline size_t DList<T>::searchAndChangeData(const T& searchData, const T& changeData)
+{
+	size_t countChanges = 0;
+	Node* temp = head;
+	while (temp != nullptr)
+	{
+		if (temp->data == searchData) {
+			temp->data = changeData;
+			++countChanges;
+		}
+		temp = temp->next;
+	}
+	return countChanges;
+}
+
+template<typename T>
+inline void DList<T>::reverse()
+{
+	Node* temp = head;
+	Node* help = nullptr;
+	while (temp != nullptr) {
+		temp->prev = temp->next;
+		temp->next = help;
+		if (temp == tail)
+			break;
+		help = temp->prev->prev;
+		temp = temp->prev;
+	}
+	help = tail;
+	tail = head;
+	head = help;
+
+	/*temp->prev = nullptr;*/
+}
+
+template<typename T>
 inline void DList<T>::clear()
 {
 	while (!isEmpty())
-		popFront();
+		popBack();
 	size = 0;
 }
 
@@ -211,6 +285,44 @@ inline void DList<T>::printR() const
 		temp = temp->prev;
 	}
 	cout << endl;
+}
+
+template<typename T>
+inline DList<T>& DList<T>::operator+(const DList& data1)
+{
+	DList l;
+	Node* temp = head;
+	while(temp!=nullptr){
+		l.pushBack(temp->data);
+		temp = temp->next;
+	}
+	temp = data1.head;
+	while (temp != nullptr) {
+		l.pushBack(temp->data);
+		temp = temp->next;
+	}
+	return l;
+}
+
+template<typename T>
+inline DList<T>& DList<T>::operator*(const DList& data1)
+{
+	vector<T> check;
+	DList l;
+	Node* temp = head;
+	while (temp != nullptr) {
+		Node* sTemp = data1.head;
+		while (sTemp != nullptr) {
+			if (temp->data == sTemp->data && helpCheck(check,temp->data))
+			{
+				l.pushBack(temp->data);
+				check.push_back(temp->data);
+			}
+			sTemp = sTemp->next;
+		}
+		temp = temp->next;
+	}
+	return l;
 }
 
 template<typename T>

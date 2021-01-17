@@ -46,33 +46,47 @@ int main()
 	//	li.insert(itR, { 0,8,88 });
 	//printList(li);
 	DList<int> l;
+	DList<int> l1;
 
 
-	l.pushFront(1);
-	l.pushFront(2);
-	l.pushFront(3);
-	l.print();
-	l.pushBack(4);
-	l.pushBack(5);
-	l.print();
-	cout << "Empty: " << boolalpha << l.isEmpty() << endl;
-	cout << "Size: " << l.getSize() << endl;
-	l.popBack();
-	l.print();
-	l.popFront();
-	l.print();
-	/*l.clear();
-	l.print();*/
-	cout << "Empty: " << boolalpha << l.isEmpty() << endl;
-	cout << "Size: " << l.getSize() << endl;
+	l.pushBack(1);
+	l.pushBack(2);
+	l1.pushBack(2);
+	l1.pushBack(3);
+	l1.pushBack(1);
+	l1.pushBack(1);
+
+	//l.print();
+	//l.pushBack(4);
+	//l.pushBack(5);
+	//l.print();
+	//cout << "Empty: " << boolalpha << l.isEmpty() << endl;
+	//cout << "Size: " << l.getSize() << endl;
+	//l.popBack();
+	//l.print();
+	//l.popFront();
+	//l.print();
+	///*l.clear();
+	//l.print();*/
+	//cout << "Empty: " << boolalpha << l.isEmpty() << endl;
+	//cout << "Size: " << l.getSize() << endl;
 	//l.popByData(1);
 	//l.print();
 	//l.printR();
 	//cout << "Size: " << l.getSize() << endl;
-	l.pushFrontByData(1,9);
+	/*l.pushFrontByData(1,9);
+	l.pushBackByData(9,11);*/
+	//l.pushBackByData(2,11);
+	//l.pushBackByData(11,11);
+	//l.print();
+	//cout << l.searchAndChangeData(11, 0) << endl;
 	l.print();
-	cout << "Size: " << l.getSize() << endl;
-
+	l.reverse();
+	l.print();
+	DList<int> test;
+	test = l1 * l;
+	test.print();
+	cout << "Size: " << test.getSize() << endl;
 
     return 0;
 }
